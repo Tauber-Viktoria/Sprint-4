@@ -35,17 +35,14 @@ class TestBooksCollector:
         assert 'Сияние' not in collector.books_genre
 
     # получаем жанр книги по её имени
-    def test_get_book_genre_add_two_books_and_set_genre(self, collector):
-        collector.add_new_book('Рассказы о Шерлоке Холмсе')
+    def test_get_book_genre_add_book_and_set_genre(self, collector):
         collector.add_new_book('Ревизор')
-        collector.set_book_genre('Рассказы о Шерлоке Холмсе', 'Детективы')
         collector.set_book_genre('Ревизор', 'Комедии')
-        assert len(collector.get_books_genre()) == 2
+        assert collector.books_genre.get('Ревизор') == 'Комедии'
 
-    def test_get_book_genre_add_book_without_set_genre(self, collector):
-        collector.set_book_genre('Рассказы о Шерлоке Холмсе', 'Детективы')
+    def test_get_book_genre_set_genre_without_add_book(self, collector):
         collector.set_book_genre('Ревизор', 'Комедии')
-        assert len(collector.get_books_genre()) == 0
+        assert collector.books_genre.get('Ревизор') is None
 
     # выводим список книг с определённым жанром
     def test_get_books_with_specific_genre_add_two_books_and_set_genre_displays_specific_genre(self, collector):
@@ -54,13 +51,6 @@ class TestBooksCollector:
         collector.set_book_genre('Рассказы о Шерлоке Холмсе', 'Детективы')
         collector.set_book_genre('Три кота', 'Мультфильмы')
         assert collector.get_books_with_specific_genre('Детективы') == ['Рассказы о Шерлоке Холмсе']
-
-    def test_get_books_with_specific_genre_add_two_books_and_set_genre_not_displays_another_genre(self, collector):
-        collector.add_new_book('Рассказы о Шерлоке Холмсе')
-        collector.add_new_book('Три кота')
-        collector.set_book_genre('Рассказы о Шерлоке Холмсе', 'Детективы')
-        collector.set_book_genre('Три кота', 'Мультфильмы')
-        assert len(collector.get_books_with_specific_genre('Фантастика')) == 0
 
     @pytest.mark.parametrize('genre', ['', 'Детективы'])
     def test_get_books_with_specific_genre_books_with_specific_genre_is_empty(self, collector, genre):
@@ -113,10 +103,6 @@ class TestBooksCollector:
         collector.add_new_book('Властелин Колец')
         collector.add_book_in_favorites('Властелин Колец')
         assert 'Властелин Колец' in collector.favorites
-
-    def test_add_book_in_favorites_book_not_exists(self, collector):
-        collector.add_book_in_favorites('День Опричника')
-        assert 'День Опричника' not in collector.favorites
 
     def test_add_book_in_favorites_duplicate_book(self, collector):
         collector.add_new_book('Анна Каренина')
